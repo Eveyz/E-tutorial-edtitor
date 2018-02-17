@@ -1,0 +1,12 @@
+<%= form_with url: add_section_content_tutorials_path do |form| %>
+  <div class="modal-body">
+    <%= form.hidden_field :id, value: tutorial.id %>
+    <%= form.hidden_field :section_id, value: section.id %>
+    <%= form.hidden_field :content, id: 'section_body' %>
+    <trix-editor input="section_body"></trix-editor>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    <%= form.submit 'Add', class: "btn btn-primary" %>
+  </div>
+<% end %>

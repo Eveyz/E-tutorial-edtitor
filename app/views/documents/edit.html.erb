@@ -1,0 +1,13 @@
+<div class="container-fluid">
+  <div class="row" style="position: relative;">
+    <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
+      <ul class="nav nav-pills flex-column" id="sectionsList">
+        <%= render "documents/sections/sections_list", sections: @sections %>
+      </ul>
+    </nav>
+    <%= render "documents/sections/new_section_modal", document: @document %>
+    <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+      <p>add content here</p>
+    </main>
+  </div>
+</div>

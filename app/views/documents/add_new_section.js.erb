@@ -1,0 +1,5 @@
+<% if @sections.present? %>
+  $('#newSectionModal').modal('toggle');
+  $('#sectionTitle').val("");
+  $('#sectionsList').html("<%= escape_javascript(render partial: 'documents/sections/sections_list', locals: {sections: @sections}).html_safe %>");
+<% end %>

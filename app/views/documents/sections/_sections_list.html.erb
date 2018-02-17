@@ -1,0 +1,16 @@
+<% if sections.present? %>
+  <% sections.each_with_index do |section, index| %>
+    <li class="nav-item clearfix" id="section-<%= section.id %>" onmouseenter='hoverSectionIn("section-<%= section.id %>");' onmouseleave='hoverSectionOut("section-<%= section.id %>");'>
+      <a class="<%= index == 0 ? 'nav-link active' : 'nav-link' %>" href="#"><%= section.title %>
+        <i class="fa fa-edit float-right icon-edit" style="display:none;"></i>
+      </a>
+    </li>
+  <% end %>
+<% end %>
+<br>
+<div class="row justify-content-center">
+  <button class="btn btn-outline-info" data-toggle="modal" data-target="#newSectionModal">
+    <i class="fa fa-plus"></i>
+    Add new section
+  </button>
+</div>

@@ -1,0 +1,34 @@
+// left sidebar
+.sidebar {
+  position: fixed !important;
+  top: 57px;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  padding: 20px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border-right: 1px solid #eee;
+}
+
+.sidebar {
+  padding: 20px 0px 20px 0px !important;
+}
+
+.nav-pills .nav-link {
+  border-radius: 0rem !important;
+}
+
+.pt-3 {
+  padding-top: 1rem !important;
+}
+
+
+// sections list
+.nav-item:hover {
+  background-color: #ecf0f1;
+}
+
+.icon-edit:hover {
+  color: #2c3e50;
+}

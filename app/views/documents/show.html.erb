@@ -1,0 +1,22 @@
+<div class="container">
+  <p id="notice"><%= notice %></p>
+
+  <ol class="breadcrumb" style="background-color: white;">
+    <li class="breadcrumb-item"><a href="#">znz</a></li>
+    <li class="breadcrumb-item active"><%= @document.title %></li>
+  </ol>
+  <p style="color: #999999;">Created at <%= time_ago_in_words(@document.created_at) %> ago</p>
+  <div class="card">
+    <div class="card-block" style="padding: 20px">
+      <h3 class="card-title"><%= @document.title %></h3>
+      <h4 class="card-text">Write and publish first draft.</h4>
+      <hr class="my-4" />
+      <%= link_to edit_document_path(@document), class: "btn btn-primary" do %>
+        <i class="fa fa-edit"></i>
+        Edit your book
+      <% end %>
+    </div>
+  </div>
+  <%= link_to 'Edit', edit_document_path(@document) %> |
+  <%= link_to 'Back', documents_path %>
+</div>
