@@ -6,8 +6,8 @@
       </ul>
     </nav>
     <%= render "documents/sections/new_section_modal", document: @document %>
-    <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
-      <p>add content here</p>
+    <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3" id="sectionsContentEditor">
+      <%= render "documents/sections/section_content_editor", sections: @sections, section: @sections.first, document: @document, sections_size: @sections.size %>
     </main>
   </div>
 </div>

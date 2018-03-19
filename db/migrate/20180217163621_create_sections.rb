@@ -4,7 +4,7 @@ class CreateSections < ActiveRecord::Migration[5.1]
       t.string :title
       t.text :content
       t.string :ancestry
-      t.references :tutorial, foreign_key: true
+      t.references :document, foreign_key: true
 
       t.timestamps
     end

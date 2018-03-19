@@ -1,5 +1,5 @@
 class Section < ApplicationRecord
-  belongs_to :tutorial
+  belongs_to :document
 
   validates :title, presence: true
 end

@@ -63,7 +63,11 @@ class DocumentsController < ApplicationController
   end
 
   def add_new_section
-    @section = @document.sections.create(title: params[:title])
+    if params[:ancestry].present?
+      @section = @document.sections.create(title: params[:title], ancestry: params[:ancestry])
+    else
+      @section = @document.sections.create(title: params[:title], ancestry: "root")
+    end
     @sections = @document.sections
     respond_to do |format|
       format.js
