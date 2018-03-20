@@ -19,13 +19,15 @@ class DocumentsController < ApplicationController
 
   # GET /documents/1/edit
   def edit
-    @sections = @document.sections
+    # hints = Hint.find_by_sql("SELECT * FROM hints WHERE sentence LIKE('%你%') ORDER BY LENGTH(sentence) ASC")
+    @sections = @document.sections.as_json.to_json
   end
 
   # POST /documents
   # POST /documents.json
   def create
-    @document = Document.new(document_params)
+    @user = User.first
+    @document = @user.documents.create(document_params)
 
     respond_to do |format|
       if @document.save
@@ -64,14 +66,18 @@ class DocumentsController < ApplicationController
 
   def add_new_section
     if params[:ancestry].present?
-      @section = @document.sections.create(title: params[:title], ancestry: params[:ancestry])
+      @section = @document.sections.create(title: params[:title], ancestry: params[:ancestry], level: params[:parent_level])
     else
-      @section = @document.sections.create(title: params[:title], ancestry: "root")
+      @section = @document.sections.create(title: params[:title], ancestry: "root", level: 0)
     end
     @sections = @document.sections
     respond_to do |format|
       format.js
     end
+  end
+
+  def add_section_content
+    puts params[:content]
   end
 
   private

@@ -71,6 +71,7 @@ GEM
     erubi (1.7.0)
     execjs (2.7.0)
     ffi (1.9.21)
+    ffi (1.9.21-x86-mingw32)
     font-awesome-rails (4.7.0.3)
       railties (>= 3.2, < 5.2)
     globalid (0.4.1)
@@ -99,8 +100,11 @@ GEM
     minitest (5.11.3)
     multi_json (1.13.1)
     mysql2 (0.4.10)
+    mysql2 (0.4.10-x86-mingw32)
     nio4r (2.2.0)
     nokogiri (1.8.2)
+      mini_portile2 (~> 2.3.0)
+    nokogiri (1.8.2-x86-mingw32)
       mini_portile2 (~> 2.3.0)
     popper_js (1.12.9)
     public_suffix (3.0.2)
@@ -173,6 +177,8 @@ GEM
     turbolinks-source (5.1.0)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
+    tzinfo-data (1.2018.3)
+      tzinfo (>= 1.0.0)
     uglifier (4.1.6)
       execjs (>= 0.3.0, < 3)
     web-console (3.5.1)
@@ -188,6 +194,7 @@ GEM
 
 PLATFORMS
   ruby
+  x86-mingw32
 
 DEPENDENCIES
   bootstrap (~> 4.0.0.alpha6)

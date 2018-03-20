@@ -25,19 +25,11 @@ ActiveRecord::Schema.define(version: 20180217163621) do
     t.string "title"
     t.text "content"
     t.string "ancestry"
+    t.integer "level"
     t.bigint "document_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["document_id"], name: "index_sections_on_document_id"
-  end
-
-  create_table "tutorials", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string "title"
-    t.text "description"
-    t.bigint "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_tutorials_on_user_id"
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -49,5 +41,4 @@ ActiveRecord::Schema.define(version: 20180217163621) do
 
   add_foreign_key "documents", "users"
   add_foreign_key "sections", "documents"
-  add_foreign_key "tutorials", "users"
 end
