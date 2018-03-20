@@ -1,5 +1,5 @@
 class DocumentsController < ApplicationController
-  before_action :set_document, only: [:show, :edit, :update, :destroy, :add_new_section]
+  before_action :set_document, only: [:show, :edit, :update, :destroy, :add_new_section, :select_section]
 
   # GET /documents
   # GET /documents.json
@@ -19,8 +19,9 @@ class DocumentsController < ApplicationController
 
   # GET /documents/1/edit
   def edit
-    # hints = Hint.find_by_sql("SELECT * FROM hints WHERE sentence LIKE('%你%') ORDER BY LENGTH(sentence) ASC")
-    @sections = @document.sections.as_json.to_json
+    @sections = @document.sections
+    @sectionsJSON = @document.sections.as_json.to_json
+    @currentSection = @sections.last
   end
 
   # POST /documents
@@ -78,6 +79,10 @@ class DocumentsController < ApplicationController
 
   def add_section_content
     puts params[:content]
+  end
+
+  def select_section
+    @section = Section.find(params[:id])
   end
 
   private

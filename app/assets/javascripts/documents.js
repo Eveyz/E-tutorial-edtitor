@@ -12,11 +12,32 @@ function expandSection(id) {
 
 }
 
+function fetchAPI(method, url, param) {
+  var data;
+  $.ajax({
+    url: url,
+    dataType: 'json',
+    contentType: "application/json;charset=utf-8",
+    type: method,
+    data: JSON.stringify(param),
+    success: function (data) {
+      
+    }
+  });
+  return data;
+}
+
+
+function setCurrentSection(id) {
+  Section.prototype.currentSection = id;
+  SectionTreeList.prototype.currentSection = id;
+}
 
 
 /* --------- Section node ------ */
 function Section(section) {
   this._id = section.id;
+  this._title = section.title;
   this._ancestry = section.ancestry;
   this._level = section.level;
   this._document_id = section.document_id;
@@ -24,12 +45,77 @@ function Section(section) {
   this._children = [];
 };
 
+Section.prototype.setCurrent = function(id) {
+  const METHOD = "GET";
+  const URL = "/documents/select_section";
+  var section = fetchAPI(METHOD, URL, null);
+  // setCurrentSection(section.id);
+};
+
+Section.prototype.render = function(ul) {
+  var li, a, span, i;
+  // append li
+  li = document.createElement('li');
+  li.setAttribute("id", "section-" + this._id);
+  li.classList.add('nav-item', 'clearfix');
+
+  // append a
+  a = document.createElement('a');
+  if(Section.prototype.currentSection === this._id) {
+    a.classList.add('nav-link', 'active', 'nav-link-active');
+  } else {
+    a.classList.add('nav-link', 'nav-link-normal');
+  }
+  a.setAttribute("href", "javascript:;");
+  a.style.paddingLeft = this._level * 40 + "px";
+
+  if(this._children.length > 0) {
+    // append dropdown arrow if children not empty
+    span = document.createElement('span');
+    span.classList.add("section-arrow");
+    i = document.createElement('i');
+    i.classList.add('fa', 'fa-caret-right');
+    i.setAttribute("aria-hidden", "true");
+    span.appendChild(i);
+    a.appendChild(span);
+  }
+
+  a.append(this._title);
+
+  // append icon
+  i = document.createElement('i');
+  i.classList.add('align-middle', 'fa', 'fa-plus', 'icon-plus');
+  i.setAttribute("aria-hidden", "true");
+  i.setAttribute("data-toggle", "modal");
+  i.setAttribute("data-target", "#newSectionModal");
+  i.style.display = "none";
+  a.appendChild(i);
+
+  li.appendChild(a);
+
+  li.addEventListener("mouseenter", hoverSectionIn(this._id));
+  li.addEventListener("mouseleave", hoverSectionOut(this._id));
+  var id = this._id;
+  li.addEventListener("click", function() {
+    Section.prototype.setCurrent(id);
+  });
+
+  ul.append(li);
+
+  // render sub tree
+  if(this._children.length > 0) {
+    for(let c = 0; c < this._children.length; c++) {
+      this._children[c].render(ul);
+    }
+  }
+}
 
 
 
 /* --------- Section tree ------ */
 function SectionTree() {
   this._root = null;
+  this._sectionList = null;
 };
 
 SectionTree.prototype.build = function(sections) {
@@ -66,14 +152,20 @@ SectionTree.prototype.deleteNode = function() {
 
 };
 
+SectionTree.prototype.render = function(ul) {
+  var root = this._root;
+  root.render(ul);
+};
 
 
 
 /* --------- Section tree list ------ */
 function SectionTreeList() {
-  this.listEle = document.getElementById("sectionsList");
-  this.treeList = [];
+  this._listContainer = document.getElementById("sectionsListContainer");
+  this._treeList = [];
 };
+
+SectionTreeList.prototype.currentSection = null;
 
 SectionTreeList.prototype.groupSectionsByRoot = function(sections) {
   // group sections by root => {id: [.,.,.]}
@@ -91,18 +183,28 @@ SectionTreeList.prototype.groupSectionsByRoot = function(sections) {
   return sectionGroups;
 }
 
-SectionTreeList.prototype.init = function(sections) {
+SectionTreeList.prototype.init = function(sections, currentSection) {
+  setCurrentSection(currentSection);
   var sectionGroups = this.groupSectionsByRoot(sections);
-  for(var group in sectionGroups) {
+  for(let group in sectionGroups) {
     if(sectionGroups.hasOwnProperty(group)) {
       let tree = new SectionTree();
       tree.build(sectionGroups[group]);
-      this.treeList.push(tree);
+      this._treeList.push(tree);
     }
   }
 };
 
 SectionTreeList.prototype.render = function() {
-  
+  var i, trees, listContainer, ulElem;
+  trees = this._treeList;
+  listContainer = this._listContainer;
+  listContainer.innerHTML = '';
+  ulElem = document.createElement('ul');
+  ulElem.setAttribute("id", "sectionsList");
+  ulElem.classList.add('nav', 'nav-pills', 'flex-column');
+  listContainer.appendChild(ulElem);
+  for(i = 0; i < trees.length; i++) {
+    trees[i].render(ulElem);
+  }
 };
-
