@@ -76,7 +76,7 @@ function SectionTreeList() {
 };
 
 SectionTreeList.prototype.groupSectionsByRoot = function(sections) {
-  // group sections by root => {id: []}
+  // group sections by root => {id: [.,.,.]}
   let sectionGroups = {};
   for(let i = 0; i < sections.length; i++) {
     let kid, section = sections[i];
