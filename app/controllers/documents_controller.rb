@@ -1,5 +1,5 @@
 class DocumentsController < ApplicationController
-  before_action :set_document, only: [:show, :edit, :update, :destroy, :add_new_section, :select_section]
+  before_action :set_document, only: [:show, :edit, :update, :destroy, :add_new_section]
 
   # GET /documents
   # GET /documents.json
@@ -20,8 +20,9 @@ class DocumentsController < ApplicationController
   # GET /documents/1/edit
   def edit
     @sections = @document.sections
-    @sectionsJSON = @document.sections.as_json.to_json
+    @sectionsJSON = @sections.as_json.to_json
     @currentSection = @sections.last
+    @currentSectionJSON = @currentSection.as_json.to_json
   end
 
   # POST /documents
@@ -79,10 +80,18 @@ class DocumentsController < ApplicationController
 
   def add_section_content
     puts params[:content]
+    @section = Section.find(params[:section_id])
+    @section.content = params[:content]
+    @section.save
   end
 
   def select_section
     @section = Section.find(params[:id])
+    @sectionJSON = @section.as_json
+    respond_to do |format|
+      format.js
+    end
+    # render json: { section: @section }
   end
 
   private

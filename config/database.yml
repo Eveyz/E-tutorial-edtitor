@@ -7,7 +7,7 @@ development:
   timeout: 5000
   database: gitbook_development
   username: root
-  # password:
+  password: znz1990
   socket: /tmp/mysql.sock
   # host:
 
@@ -21,7 +21,7 @@ test:
   timeout: 5000
   database: gitbook_test
   username: root
-  # password:
+  password: znz1990
   socket: /tmp/mysql.sock
   # host:
 
@@ -32,6 +32,6 @@ production:
   timeout: 5000
   database: gitbook_production
   username: root
-  # password:
+  password: znz1990
   socket: /tmp/mysql.sock
   # host:

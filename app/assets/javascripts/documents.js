@@ -1,32 +1,16 @@
 function hoverSectionIn(id) {
-  const sectionLink = "#" + id + " a";
+  const sectionLink = "#section-" + id + " a";
   $(sectionLink).children(".icon-plus").show();
 }
 
 function hoverSectionOut(id) {
-  const sectionLink = "#" + id + " a";
-  $(sectionLink).children(".icon-plus").hide();;
+  const sectionLink = "#section-" + id + " a";
+  $(sectionLink).children(".icon-plus").hide();
 }
 
 function expandSection(id) {
 
 }
-
-function fetchAPI(method, url, param) {
-  var data;
-  $.ajax({
-    url: url,
-    dataType: 'json',
-    contentType: "application/json;charset=utf-8",
-    type: method,
-    data: JSON.stringify(param),
-    success: function (data) {
-      
-    }
-  });
-  return data;
-}
-
 
 function setCurrentSection(id) {
   Section.prototype.currentSection = id;
@@ -46,13 +30,20 @@ function Section(section) {
 };
 
 Section.prototype.setCurrent = function(id) {
-  const METHOD = "GET";
-  const URL = "/documents/select_section";
-  var section = fetchAPI(METHOD, URL, null);
-  // setCurrentSection(section.id);
+  $.ajax({
+    url: "/documents/select_section",
+    type: "POST",
+    data: {"id": id},
+    success: function (response) {
+      // let nid = response.section.id;
+      // setCurrentSection(response.section.id);
+      // $(".active.nav-link-active").removeClass('active nav-link-active').addClass('nav-link-normal');
+      // $("#section-" + nid + " a").removeClass('nav-link-normal').addClass('active nav-link-active');
+    }
+  });
 };
 
-Section.prototype.render = function(ul) {
+Section.prototype.render = function(container) {
   var li, a, span, i;
   // append li
   li = document.createElement('li');
@@ -67,7 +58,7 @@ Section.prototype.render = function(ul) {
     a.classList.add('nav-link', 'nav-link-normal');
   }
   a.setAttribute("href", "javascript:;");
-  a.style.paddingLeft = this._level * 40 + "px";
+  a.style.paddingLeft = this._level === 0 ? "10px" : this._level * 40 + "px";
 
   if(this._children.length > 0) {
     // append dropdown arrow if children not empty
@@ -82,7 +73,7 @@ Section.prototype.render = function(ul) {
 
   a.append(this._title);
 
-  // append icon
+  // append plus icon
   i = document.createElement('i');
   i.classList.add('align-middle', 'fa', 'fa-plus', 'icon-plus');
   i.setAttribute("aria-hidden", "true");
@@ -93,19 +84,25 @@ Section.prototype.render = function(ul) {
 
   li.appendChild(a);
 
-  li.addEventListener("mouseenter", hoverSectionIn(this._id));
-  li.addEventListener("mouseleave", hoverSectionOut(this._id));
   var id = this._id;
+  // li.addEventListener("mouseenter", hoverSectionIn(this._id));
+  // li.addEventListener("mouseleave", hoverSectionOut(this._id));
   li.addEventListener("click", function() {
     Section.prototype.setCurrent(id);
   });
+  li.addEventListener("mouseenter", function() {
+    hoverSectionIn(id);
+  });
+  li.addEventListener("mouseleave", function() {
+    hoverSectionOut(id);
+  });
 
-  ul.append(li);
+  container.append(li);
 
   // render sub tree
   if(this._children.length > 0) {
     for(let c = 0; c < this._children.length; c++) {
-      this._children[c].render(ul);
+      this._children[c].render(container);
     }
   }
 }

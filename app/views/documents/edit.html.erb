@@ -16,18 +16,18 @@
     </nav>
     <%= render "documents/sections/new_section_modal", document: @document %>
     <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3" id="sectionsContentEditor">
-      <% if false %>
-        <%= render "documents/sections/section_content_editor", sections: @sections, section: @sections.first, document: @document, sections_size: @sections.size %>
-      <% end %>
+      <%= render "documents/sections/section_content_editor", section: @currentSection, sections_size: @sections.size %>
     </main>
   </div>
 </div>
 
 <script>
   var sections = <%= raw @sectionsJSON %>;
-  var currentSection = <%= raw @currentSection.id %>;
+  var currentSection = <%= raw @currentSectionJSON %>;
+  
   var stl = new SectionTreeList();
-  stl.init(sections, currentSection);
+  stl.init(sections, currentSection.id);
   stl.render();
   console.log(stl);
+
 </script>
