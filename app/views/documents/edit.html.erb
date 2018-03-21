@@ -1,33 +1,28 @@
 <div class="container-fluid">
   <div class="row" style="position: relative;">
-    <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
+    <nav class="col-sm-3 col-md-3 hidden-xs-down bg-faded sidebar">
       <div id="sectionsListContainer">
-        <% if false %>
-          <%= render "documents/sections/sections_list", sections: @sections %>
-        <% end %>
+        <%= render "documents/sections/sections_list", sectionsJSON: @sectionsJSON, currentSectionJSON: @currentSectionJSON %>
       </div>
       <br>
       <div class="row justify-content-center">
-        <button class="btn btn-outline-info" data-toggle="modal" data-target="#newSectionModal">
+        <button class="btn btn-outline-info" id="newSectionButton" data-toggle="modal" data-target="#newSectionModal">
           <i class="fa fa-plus"></i>
           Add new section
         </button>
       </div>
     </nav>
     <%= render "documents/sections/new_section_modal", document: @document %>
-    <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3" id="sectionsContentEditor">
+    <main class="col-sm-9 offset-sm-3 col-md-9 offset-md-3 pt-3" id="sectionsContentEditor">
       <%= render "documents/sections/section_content_editor", section: @currentSection, sections_size: @sections.size %>
     </main>
   </div>
 </div>
 
 <script>
-  var sections = <%= raw @sectionsJSON %>;
-  var currentSection = <%= raw @currentSectionJSON %>;
-  
-  var stl = new SectionTreeList();
-  stl.init(sections, currentSection.id);
-  stl.render();
-  console.log(stl);
-
+  $("#newSectionButton").on("click", function() {
+    $("#modal-parent").val("");
+    $("#modal-parent-ancestry").val("");
+    $("#modal-parent-level").val("");
+  });
 </script>

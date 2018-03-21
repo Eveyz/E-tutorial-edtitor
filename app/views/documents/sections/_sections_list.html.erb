@@ -1,4 +1,4 @@
-<% if sections.present? %>
+<% if false %>
   <ul class="nav nav-pills flex-column">
     <% sections.each_with_index do |section, index| %>
       <li class="nav-item clearfix" id="section-<%= section.id %>" onmouseenter='hoverSectionIn("section-<%= section.id %>");' onmouseleave='hoverSectionOut("section-<%= section.id %>");'>
@@ -13,3 +13,14 @@
     <% end %>
   </ul>
 <% end %>
+
+<script>
+  var sections = <%= raw sectionsJSON %>;
+  var currentSection = <%= raw currentSectionJSON %>;
+  var id = currentSection ? currentSection.id : null;
+  var stl = new SectionTreeList();
+  stl.init(sections, id);
+  stl.render();
+  console.log(stl);
+
+</script>

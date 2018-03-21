@@ -19,9 +19,10 @@ class DocumentsController < ApplicationController
 
   # GET /documents/1/edit
   def edit
-    @sections = @document.sections
+    @sections = @document.sections.order('sections.updated_at ASC')
     @sectionsJSON = @sections.as_json.to_json
     @currentSection = @sections.last
+    p @currentSection
     @currentSectionJSON = @currentSection.as_json.to_json
   end
 
@@ -67,19 +68,26 @@ class DocumentsController < ApplicationController
   end
 
   def add_new_section
-    if params[:ancestry].present?
-      @section = @document.sections.create(title: params[:title], ancestry: params[:ancestry], level: params[:parent_level])
-    else
+    if params[:ancestry].blank? and params[:parent].blank? and params[:level].blank?
       @section = @document.sections.create(title: params[:title], ancestry: "root", level: 0)
+    else
+      if params[:ancestry] == "root"
+        ancestry = params[:parent].to_s + "/"
+      else
+        ancestry = params[:ancestry] + params[:parent].to_s + "/"
+      end
+      level = params[:level].to_i + 1
+      @section = @document.sections.create(title: params[:title], ancestry: ancestry, level: level)
     end
-    @sections = @document.sections
+    @sections = @document.sections.order('sections.updated_at ASC')
+    @sectionsJSON = @sections.as_json.to_json
+    @currentSectionJSON = @section.as_json.to_json
     respond_to do |format|
       format.js
     end
   end
 
   def add_section_content
-    puts params[:content]
     @section = Section.find(params[:section_id])
     @section.content = params[:content]
     @section.save

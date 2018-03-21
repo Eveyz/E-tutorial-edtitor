@@ -8,6 +8,12 @@ function hoverSectionOut(id) {
   $(sectionLink).children(".icon-plus").hide();
 }
 
+function addSubSection(id, ancestry, level) {
+  $("#modal-parent").val(id);
+  $("#modal-parent-ancestry").val(ancestry);
+  $("#modal-parent-level").val(level);
+}
+
 function expandSection(id) {
 
 }
@@ -45,6 +51,7 @@ Section.prototype.setCurrent = function(id) {
 
 Section.prototype.render = function(container) {
   var li, a, span, i;
+  var id = this._id, ancestry = this._ancestry, level = this._level;
   // append li
   li = document.createElement('li');
   li.setAttribute("id", "section-" + this._id);
@@ -80,11 +87,13 @@ Section.prototype.render = function(container) {
   i.setAttribute("data-toggle", "modal");
   i.setAttribute("data-target", "#newSectionModal");
   i.style.display = "none";
+  i.addEventListener("click", function() {
+    addSubSection(id, ancestry, level);
+  });
   a.appendChild(i);
 
   li.appendChild(a);
 
-  var id = this._id;
   // li.addEventListener("mouseenter", hoverSectionIn(this._id));
   // li.addEventListener("mouseleave", hoverSectionOut(this._id));
   li.addEventListener("click", function() {

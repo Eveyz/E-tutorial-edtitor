@@ -1,13 +1,13 @@
 <% if sections_size > 0 %>
   <%= form_with url: add_section_content_documents_path do |form| %>
     <div class="modal-body">
+      <% val = section.content %>
       <%= form.hidden_field :section_id, value: section.id %>
-      <%= form.hidden_field :content, id: 'section_body', value: section.content %>
-      <trix-editor input="section_body"></trix-editor>
+      <%= form.hidden_field :content, id: 'section_body', value: val %>
+      <trix-editor input="section_body" style="height: 60vh;"></trix-editor>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      <%= form.submit 'Add', class: "btn btn-primary" %>
+      <%= form.submit 'Save', class: "btn btn-primary" %>
     </div>
   <% end %>
 <% else %>
