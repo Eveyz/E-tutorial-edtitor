@@ -1,20 +1,22 @@
-<% if sections_size > 0 %>
-  <div style="padding-left: 16px;">
-    <h3><%= section.title %></h3>
-    <hr>
-  </div>
-  <%= form_with url: add_section_content_documents_path do |form| %>
-    <div class="modal-body">
-      <% val = section.content %>
-      <%= form.hidden_field :section_id, value: section.id %>
-      <%= form.hidden_field :content, id: 'section_body', value: val %>
-      <trix-editor input="section_body" style="height: 60vh;"></trix-editor>
+<div class="container">
+  <% if sections_size > 0 %>
+    <div style="padding-left: 16px;">
+      <h3 id="section-title-editor" style="cursor: pointer;" onClick="changeSectionTitle(<%= section.id %>);"><%= section.title %></h3>
+      <hr>
     </div>
-    <div class="modal-footer">
-      <%= form.submit 'Save', class: "btn btn-primary" %>
-    </div>
+    <%= form_with url: add_section_content_documents_path do |form| %>
+      <div class="modal-body">
+        <% val = section.content %>
+        <%= form.hidden_field :section_id, value: section.id %>
+        <%= form.hidden_field :content, id: 'section_body', value: val %>
+        <trix-editor input="section_body" style="height: 60vh;"></trix-editor>
+      </div>
+      <div class="modal-footer">
+        <%= form.submit 'Save', class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  <% else %>
+    <br>
+    <h2 class="text-center">Please add a new section</h2>
   <% end %>
-<% else %>
-  <br>
-  <h2 class="text-center">Please add a new section</h2>
-<% end %>
+</div>

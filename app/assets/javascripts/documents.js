@@ -1,27 +1,52 @@
 function hoverSectionIn(id) {
   const sectionLink = "#section-" + id + " a span";
   $(sectionLink).children(".icon-plus").show();
-}
+};
 
 function hoverSectionOut(id) {
   const sectionLink = "#section-" + id + " a span";
   $(sectionLink).children(".icon-plus").hide();
-}
+};
+
+function changeSectionTitle(sectionID) {
+  var ele, val, input;
+  ele = $("#section-title-editor");
+  val = ele.text();
+  console.log("sectionid: " + sectionID);
+  ele.replaceWith('<div class="input-group mb-3" id="newSectionTitleInputContainer"><input id="newSectionTitleInput" type="text" class="form-control" value="' + val + '" placeholder="title" aria-label="title" aria-describedby="basic-addon2"><div class="input-group-append"><button class="btn btn-outline-secondary" onClick="saveNewSectionTitle(' + sectionID + ');" type="button">Save</button></div></div>');
+};
+
+function saveNewSectionTitle(sectionID) {
+  var val;
+  val = $("#newSectionTitleInput").val();
+  $.ajax({
+    url: "/documents/save_section_new_title",
+    type: "POST",
+    data: {"id": sectionID, "title": val},
+    success: function (response) {
+      $("#newSectionTitleInputContainer").replaceWith('<h3 id="section-title-editor" style="cursor: pointer;" onClick="changeSectionTitle(' + sectionID + ');">' + response.title + '</h3>');
+      $("#section-" + sectionID + " a span span").text(response.title);
+    },
+    fail: function(jqXHR, textStatus, error) {
+      // $('#editor-content-container').html(jqXHR.responseText);
+    }
+  });
+};
 
 function addSubSection(id, ancestry, level) {
   $("#modal-parent").val(id);
   $("#modal-parent-ancestry").val(ancestry);
   $("#modal-parent-level").val(level);
-}
+};
 
 function expandSection(id) {
 
-}
+};
 
 function setCurrentSection(id) {
   Section.prototype.currentSection = id;
   SectionTreeList.prototype.currentSection = id;
-}
+};
 
 
 /* --------- Section node ------ */
@@ -51,7 +76,7 @@ Section.prototype.setCurrent = function(id) {
 };
 
 Section.prototype.toHTML = function() {
-  var li, a, span, rspan, i, _curentObj = this;
+  var li, a, span, rspan, textSpan, i, _curentObj = this;
   var id = this._id, ancestry = this._ancestry, level = this._level;
   // append li
   li = document.createElement('li');
@@ -88,7 +113,10 @@ Section.prototype.toHTML = function() {
   }
 
   rspan = document.createElement('span');
-  rspan.append(this._title);
+  textSpan = document.createElement('span');
+  textSpan.classList.add("text-title-span");
+  textSpan.append(this._title);
+  rspan.appendChild(textSpan);
 
   // append plus icon
   i = document.createElement('i');
@@ -100,6 +128,7 @@ Section.prototype.toHTML = function() {
   i.addEventListener("click", function() {
     addSubSection(id, ancestry, level);
   });
+
   rspan.appendChild(i);
   rspan.addEventListener("click", function() {
     Section.prototype.setCurrent(id);

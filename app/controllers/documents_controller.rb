@@ -22,7 +22,6 @@ class DocumentsController < ApplicationController
     @sections = @document.sections.order('sections.updated_at ASC')
     @sectionsJSON = @sections.as_json.to_json
     @currentSection = @sections.last
-    p @currentSection
     @currentSectionJSON = @currentSection.as_json.to_json
   end
 
@@ -91,6 +90,7 @@ class DocumentsController < ApplicationController
     @section = Section.find(params[:section_id])
     @section.content = params[:content]
     @section.save
+    render json: { status: "successful" }
   end
 
   def select_section
@@ -100,6 +100,13 @@ class DocumentsController < ApplicationController
       format.js
     end
     # render json: { section: @section }
+  end
+
+  def save_section_new_title
+    @section = Section.find(params[:id])
+    @section.title = params[:title]
+    @section.save
+    render json: { title: @section.title }
   end
 
   private
