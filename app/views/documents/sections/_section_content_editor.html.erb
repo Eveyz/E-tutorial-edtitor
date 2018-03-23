@@ -1,4 +1,8 @@
 <% if sections_size > 0 %>
+  <div style="padding-left: 16px;">
+    <h3><%= section.title %></h3>
+    <hr>
+  </div>
   <%= form_with url: add_section_content_documents_path do |form| %>
     <div class="modal-body">
       <% val = section.content %>

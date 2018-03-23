@@ -1,10 +1,10 @@
 function hoverSectionIn(id) {
-  const sectionLink = "#section-" + id + " a";
+  const sectionLink = "#section-" + id + " a span";
   $(sectionLink).children(".icon-plus").show();
 }
 
 function hoverSectionOut(id) {
-  const sectionLink = "#section-" + id + " a";
+  const sectionLink = "#section-" + id + " a span";
   $(sectionLink).children(".icon-plus").hide();
 }
 
@@ -33,6 +33,7 @@ function Section(section) {
   this._document_id = section.document_id;
   this._parent = null;
   this._children = [];
+  this.expandSubTree = true;
 };
 
 Section.prototype.setCurrent = function(id) {
@@ -49,8 +50,8 @@ Section.prototype.setCurrent = function(id) {
   });
 };
 
-Section.prototype.render = function(container) {
-  var li, a, span, i;
+Section.prototype.toHTML = function() {
+  var li, a, span, rspan, i, _curentObj = this;
   var id = this._id, ancestry = this._ancestry, level = this._level;
   // append li
   li = document.createElement('li');
@@ -72,13 +73,22 @@ Section.prototype.render = function(container) {
     span = document.createElement('span');
     span.classList.add("section-arrow");
     i = document.createElement('i');
-    i.classList.add('fa', 'fa-caret-right');
+    if(_curentObj.expandSubTree)
+      i.classList.add('fa', 'fa-caret-down');
+    else
+      i.classList.add('fa', 'fa-caret-right');
     i.setAttribute("aria-hidden", "true");
+
+    i.addEventListener("click", function() {
+      console.log("expanded false");
+      _curentObj.expandSubTree = false;
+    });
     span.appendChild(i);
     a.appendChild(span);
   }
 
-  a.append(this._title);
+  rspan = document.createElement('span');
+  rspan.append(this._title);
 
   // append plus icon
   i = document.createElement('i');
@@ -90,15 +100,16 @@ Section.prototype.render = function(container) {
   i.addEventListener("click", function() {
     addSubSection(id, ancestry, level);
   });
-  a.appendChild(i);
+  rspan.appendChild(i);
+  rspan.addEventListener("click", function() {
+    Section.prototype.setCurrent(id);
+  });
 
+  a.appendChild(rspan);
   li.appendChild(a);
 
   // li.addEventListener("mouseenter", hoverSectionIn(this._id));
   // li.addEventListener("mouseleave", hoverSectionOut(this._id));
-  li.addEventListener("click", function() {
-    Section.prototype.setCurrent(id);
-  });
   li.addEventListener("mouseenter", function() {
     hoverSectionIn(id);
   });
@@ -106,12 +117,17 @@ Section.prototype.render = function(container) {
     hoverSectionOut(id);
   });
 
-  container.append(li);
+  return li;
+}
 
-  // render sub tree
-  if(this._children.length > 0) {
-    for(let c = 0; c < this._children.length; c++) {
-      this._children[c].render(container);
+Section.prototype.render = function(container) {
+  var li = this.toHTML(), children, _curentObj = this;
+  container.append(li);
+  if(_curentObj.expandSubTree) {
+    // show sub tree
+    children = _curentObj._children;
+    for(let i = 0; i < children.length; i++) {
+      children[i].render(container);
     }
   }
 }
