@@ -121,7 +121,10 @@ class DocumentsController < ApplicationController
 
     def initialize_document_json_file
       if not File.exists?(Section::SECTION_JSON_FILE)
-        File.new Section::SECTION_JSON_FILE
+        initial_data = { sections: [], count: 0 }
+        File.open(Section::SECTION_JSON_FILE,"w") do |f|
+          f.puts JSON.pretty_generate(initial_data)
+        end
       end
     end
 
