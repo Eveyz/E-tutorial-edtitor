@@ -21,8 +21,8 @@
   var stl = new SectionTreeList();
   stl.init(sections, id);
   stl.render();
-
-  
+  $(document).on("click", ".section-arrow", function() {
+    stl.render();
+  });
   console.log(stl);
-
 </script>

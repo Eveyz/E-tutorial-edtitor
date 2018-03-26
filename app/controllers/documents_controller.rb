@@ -1,5 +1,7 @@
 class DocumentsController < ApplicationController
   before_action :set_document, only: [:show, :edit, :update, :destroy, :add_new_section]
+  before_action :initialize_document_json_file, only: [:edit]
+  before_action :read_sections_from_json_file, only: [:edit, :add_new_section, :add_section_content, :select_section, :save_section_new_title]
 
   # GET /documents
   # GET /documents.json
@@ -19,10 +21,14 @@ class DocumentsController < ApplicationController
 
   # GET /documents/1/edit
   def edit
-    @sections = @document.sections.order('sections.updated_at ASC')
-    @sectionsJSON = @sections.as_json.to_json
-    @currentSection = @sections.last
-    @currentSectionJSON = @currentSection.as_json.to_json
+    # @sections = @document.sections.order('sections.updated_at ASC')
+    @sectionsJSON = @sections.to_json
+    section = @sections.last
+    @currentSectionJSON = {}
+    if section.present?
+      @currentSection = Section.new(section["id"], section["title"], section["content"], section["ancestry"], section["level"], section["created_at"], section["updated_at"])
+    end
+    @currentSectionJSON = @currentSection.to_json
   end
 
   # POST /documents
@@ -68,7 +74,7 @@ class DocumentsController < ApplicationController
 
   def add_new_section
     if params[:ancestry].blank? and params[:parent].blank? and params[:level].blank?
-      @section = @document.sections.create(title: params[:title], ancestry: "root", level: 0)
+      @section_data = Section.create(@count + 1, params[:title], params[:content], "root", 0, Time.now, Time.now)
     else
       if params[:ancestry] == "root"
         ancestry = params[:parent].to_s + "/"
@@ -76,43 +82,53 @@ class DocumentsController < ApplicationController
         ancestry = params[:ancestry] + params[:parent].to_s + "/"
       end
       level = params[:level].to_i + 1
-      @section = @document.sections.create(title: params[:title], ancestry: ancestry, level: level)
+      @section_data = Section.create(@count + 1, params[:title], params[:content], ancestry, level, Time.now, Time.now)
     end
-    @sections = @document.sections.order('sections.updated_at ASC')
-    @sectionsJSON = @sections.as_json.to_json
-    @currentSectionJSON = @section.as_json.to_json
+    # @sections = @document.sections.order('sections.updated_at ASC')
+    @sectionsJSON = @section_data[:sections].to_json
+    @section = @section_data[:section]
+    @currentSectionJSON = @section.to_json
     respond_to do |format|
       format.js
     end
   end
 
   def add_section_content
-    @section = Section.find(params[:section_id])
-    @section.content = params[:content]
-    @section.save
+    @section = Section.find(params[:section_id], @sections)
+    Section.update_attribute(@section.id, "content", params[:content])
     render json: { status: "successful" }
   end
 
   def select_section
-    @section = Section.find(params[:id])
-    @sectionJSON = @section.as_json
+    @section = Section.find(params[:id], @sections)
+    @sectionJSON = @section.to_json
     respond_to do |format|
       format.js
     end
-    # render json: { section: @section }
   end
 
   def save_section_new_title
-    @section = Section.find(params[:id])
-    @section.title = params[:title]
-    @section.save
-    render json: { title: @section.title }
+    @section = Section.find(params[:id], @sections)
+    result = Section.update_attribute(@section.id, "title", params[:title])
+    render json: { title: result }
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_document
       @document = Document.find(params[:id])
+    end
+
+    def initialize_document_json_file
+      if not File.exists?(Section::SECTION_JSON_FILE)
+        File.new Section::SECTION_JSON_FILE
+      end
+    end
+
+    def read_sections_from_json_file
+      data = Section.load_data_from_json_file
+      @sections = data["sections"]
+      @count = data["count"]
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

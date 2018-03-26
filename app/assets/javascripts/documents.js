@@ -104,10 +104,10 @@ Section.prototype.toHTML = function() {
       i.classList.add('fa', 'fa-caret-right');
     i.setAttribute("aria-hidden", "true");
 
-    i.addEventListener("click", function() {
-      console.log("expanded false");
-      _curentObj.expandSubTree = false;
+    span.addEventListener("click", function() {
+      _curentObj.expandSubTree = _curentObj.expandSubTree ? false : true;
     });
+
     span.appendChild(i);
     a.appendChild(span);
   }
@@ -189,18 +189,6 @@ SectionTree.prototype.build = function(sections) {
     }
   }
   this._root = root;
-};
-
-SectionTree.prototype.addNode = function() {
-
-};
-
-SectionTree.prototype.changeNodeTitle = function(title) {
-
-};
-
-SectionTree.prototype.deleteNode = function() {
-
 };
 
 SectionTree.prototype.render = function(ul) {
