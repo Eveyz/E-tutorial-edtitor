@@ -1,25 +1,11 @@
-<% if false %>
-  <ul class="nav nav-pills flex-column">
-    <% sections.each_with_index do |section, index| %>
-      <li class="nav-item clearfix" id="section-<%= section.id %>" onmouseenter='hoverSectionIn("section-<%= section.id %>");' onmouseleave='hoverSectionOut("section-<%= section.id %>");'>
-        <a class="<%= index == 0 ? 'nav-link active nav-link-active' : 'nav-link nav-link-normal' %>" href="javascript:;">
-          <% if section.ancestry and section.ancestry != "root" %>
-            <span class="section-arrow" onclick='expandSection("section-<%= section.id %>");'><i class="fa fa-caret-right" aria-hidden="true"></i></span>
-          <% end %>
-          <%= section.title %>
-          <i class="align-middle fa fa-plus icon-plus" aria-hidden="true" style="display:none;" data-toggle="modal" data-target="#newSectionModal"></i>
-        </a>
-      </li>
-    <% end %>
-  </ul>
-<% end %>
 
 <script>
   var sections = <%= raw sectionsJSON %>;
   var currentSection = <%= raw currentSectionJSON %>;
   var id = currentSection ? currentSection.id : null;
+  var edit = <%= raw edit %>;
   var stl = new SectionTreeList();
-  stl.init(sections, id);
+  stl.init(sections, id, edit);
   stl.render();
   $(document).on("click", ".section-arrow", function() {
     stl.render();

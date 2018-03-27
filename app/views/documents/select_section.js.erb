@@ -1,3 +1,8 @@
 $(".active.nav-link-active").removeClass('active nav-link-active').addClass('nav-link-normal');
 $("#section-" + <%= @section.id %> + " a").removeClass('nav-link-normal').addClass('active nav-link-active');
-$('#sectionsContentEditor').html("<%= escape_javascript(render partial: 'documents/sections/section_content_editor', locals: {section: @section, sections_size: 1}) %>");
+
+<% if @edit == "true" %>
+  $('#sectionsContentEditor').html("<%= escape_javascript(render partial: 'documents/sections/section_content_editor', locals: {section: @section, sections_size: 1}) %>");
+<% else %>
+  $('#sectionsContent').html("<%= escape_javascript(render partial: 'documents/sections/section_content', locals: {section: @section }) %>");
+<% end %>

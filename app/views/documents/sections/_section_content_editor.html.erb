@@ -13,6 +13,7 @@
       </div>
       <div class="modal-footer">
         <%= form.submit 'Save', class: "btn btn-primary" %>
+        <button class="btn btn-danger" id="delete-section-button" type="button">Delete</button>
       </div>
     <% end %>
   <% else %>
@@ -20,3 +21,21 @@
     <h2 class="text-center">Please add a new section</h2>
   <% end %>
 </div>
+
+<script>
+  var sectionID = <%= raw section.id %>;
+  $("#delete-section-button").on("click", function() {
+    var action = confirm("Are you sure you want delete current section?");
+    if (action == true) {
+      console.log("Delete current section. " + sectionID);
+      $.ajax({
+        url: "/documents/delete_section",
+        type: "DELETE",
+        data: { "id": sectionID },
+        success: function (response) {
+          
+        }
+      });
+    }
+  });
+</script>

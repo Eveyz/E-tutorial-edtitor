@@ -23,16 +23,6 @@ class Section
     return nil
   end
 
-  def self.load_data_from_json_file
-    begin
-      file = File.read SECTION_JSON_FILE
-      data = JSON.parse(file)
-      return data
-    rescue
-      return false
-    end
-  end
-
   def self.create(id, title, content, ancestry, level, create_at, updated_at)
     section = self.new(id, title, content, ancestry, level, create_at, updated_at)
     tempHash = {
@@ -63,11 +53,41 @@ class Section
     end
   end
 
+  def self.delete(id)
+    data = Section.load_data_from_json_file
+    sections = data["sections"]
+    # sections.each do |sec|
+    #   if sec["id"] == id
+    #     sections.delete(sec)
+    #   end
+    # end
+    sections.delete_if {|sec| sec["id"] == id } 
+    p sections
+    data = Section.load_data_from_json_file
+    sections = data["sections"]
+    return sections
+    # if self.write_to_file(data)
+    #   return value
+    # else
+    #   return false
+    # end
+  end
+
   def self.add_new_section_to_json_file(tempHash)
     data = Section.load_data_from_json_file
     data["count"] += 1
     data["sections"] << tempHash
     self.write_to_file(data)
+  end
+
+  def self.load_data_from_json_file
+    begin
+      file = File.read SECTION_JSON_FILE
+      data = JSON.parse(file)
+      return data
+    rescue
+      return false
+    end
   end
 
   def self.write_to_file(data)

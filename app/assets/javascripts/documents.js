@@ -12,7 +12,6 @@ function changeSectionTitle(sectionID) {
   var ele, val, input;
   ele = $("#section-title-editor");
   val = ele.text();
-  console.log("sectionid: " + sectionID);
   ele.replaceWith('<div class="input-group mb-3" id="newSectionTitleInputContainer"><input id="newSectionTitleInput" type="text" class="form-control" value="' + val + '" placeholder="title" aria-label="title" aria-describedby="basic-addon2"><div class="input-group-append"><button class="btn btn-outline-secondary" onClick="saveNewSectionTitle(' + sectionID + ');" type="button">Save</button></div></div>');
 };
 
@@ -59,13 +58,14 @@ function Section(section) {
   this._parent = null;
   this._children = [];
   this.expandSubTree = true;
+  this._edit = true;
 };
 
-Section.prototype.setCurrent = function(id) {
+Section.prototype.setCurrent = function(id, edit) {
   $.ajax({
     url: "/documents/select_section",
     type: "POST",
-    data: {"id": id},
+    data: {"id": id, "edit": edit},
     success: function (response) {
       // let nid = response.section.id;
       // setCurrentSection(response.section.id);
@@ -118,20 +118,22 @@ Section.prototype.toHTML = function() {
   textSpan.append(this._title);
   rspan.appendChild(textSpan);
 
-  // append plus icon
-  i = document.createElement('i');
-  i.classList.add('align-middle', 'fa', 'fa-plus', 'icon-plus');
-  i.setAttribute("aria-hidden", "true");
-  i.setAttribute("data-toggle", "modal");
-  i.setAttribute("data-target", "#newSectionModal");
-  i.style.display = "none";
-  i.addEventListener("click", function() {
-    addSubSection(id, ancestry, level);
-  });
+  // append plus icon if in edit mode
+  if(this._edit) {
+    i = document.createElement('i');
+    i.classList.add('align-middle', 'fa', 'fa-plus', 'icon-plus');
+    i.setAttribute("aria-hidden", "true");
+    i.setAttribute("data-toggle", "modal");
+    i.setAttribute("data-target", "#newSectionModal");
+    i.style.display = "none";
+    i.addEventListener("click", function() {
+      addSubSection(id, ancestry, level);
+    });
+    rspan.appendChild(i);
+  }
 
-  rspan.appendChild(i);
   rspan.addEventListener("click", function() {
-    Section.prototype.setCurrent(id);
+    Section.prototype.setCurrent(id, _curentObj._edit);
   });
 
   a.appendChild(rspan);
@@ -169,12 +171,13 @@ function SectionTree() {
   this._sectionList = null;
 };
 
-SectionTree.prototype.build = function(sections) {
+SectionTree.prototype.build = function(sections, edit) {
   let root = null;
   // build node hash and find the root node
   var nodes = {};
   for(let i = 0; i < sections.length; i++) {
     let node = new Section(sections[i]);
+    node._edit = edit
     nodes[node._id] = node;
     if(node._ancestry == "root") root = node;
   }
@@ -222,13 +225,13 @@ SectionTreeList.prototype.groupSectionsByRoot = function(sections) {
   return sectionGroups;
 }
 
-SectionTreeList.prototype.init = function(sections, currentSection) {
+SectionTreeList.prototype.init = function(sections, currentSection, edit) {
   setCurrentSection(currentSection);
   var sectionGroups = this.groupSectionsByRoot(sections);
   for(let group in sectionGroups) {
     if(sectionGroups.hasOwnProperty(group)) {
       let tree = new SectionTree();
-      tree.build(sectionGroups[group]);
+      tree.build(sectionGroups[group], edit);
       this._treeList.push(tree);
     }
   }

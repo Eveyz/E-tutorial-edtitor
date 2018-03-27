@@ -2,7 +2,7 @@
   <div class="row" style="position: relative;">
     <nav class="col-sm-3 col-md-3 hidden-xs-down bg-faded sidebar">
       <div id="sectionsListContainer">
-        <%= render "documents/sections/sections_list", sectionsJSON: @sectionsJSON, currentSectionJSON: @currentSectionJSON %>
+        <%= render "documents/sections/sections_list", sectionsJSON: @sectionsJSON, currentSectionJSON: @currentSectionJSON, edit: @edit %>
       </div>
       <br>
       <div class="row justify-content-center">
@@ -12,7 +12,7 @@
         </button>
       </div>
     </nav>
-    <%= render "documents/sections/new_section_modal", document: @document %>
+    <%= render "documents/sections/new_section_modal" %>
     <main class="col-sm-9 offset-sm-3 col-md-9 offset-md-3 pt-3" id="sectionsContentEditor">
       <%= render "documents/sections/section_content_editor", section: @currentSection, sections_size: @sections.size %>
     </main>
@@ -25,4 +25,5 @@
     $("#modal-parent-ancestry").val("");
     $("#modal-parent-level").val("");
   });
+
 </script>

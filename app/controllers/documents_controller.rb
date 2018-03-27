@@ -1,7 +1,7 @@
 class DocumentsController < ApplicationController
   before_action :set_document, only: [:show, :edit, :update, :destroy, :add_new_section]
-  before_action :initialize_document_json_file, only: [:edit]
-  before_action :read_sections_from_json_file, only: [:edit, :add_new_section, :add_section_content, :select_section, :save_section_new_title]
+  before_action :initialize_document_json_file, only: [:edit_tutorial]
+  before_action :read_sections_from_json_file, only: [:edit_tutorial, :add_new_section, :add_section_content, :select_section, :save_section_new_title, :read]
 
   # GET /documents
   # GET /documents.json
@@ -72,6 +72,28 @@ class DocumentsController < ApplicationController
     end
   end
 
+  def edit_tutorial
+    @sectionsJSON = @sections.to_json
+    section = @sections.last
+    @currentSectionJSON = {}
+    if section.present?
+      @currentSection = Section.new(section["id"], section["title"], section["content"], section["ancestry"], section["level"], section["created_at"], section["updated_at"])
+    end
+    @currentSectionJSON = @currentSection.to_json
+    @edit = true
+  end
+
+  def read
+    @sectionsJSON = @sections.to_json
+    section = @sections.last
+    @currentSectionJSON = {}
+    if section.present?
+      @currentSection = Section.new(section["id"], section["title"], section["content"], section["ancestry"], section["level"], section["created_at"], section["updated_at"])
+    end
+    @currentSectionJSON = @currentSection.to_json
+    @edit = false
+  end
+
   def add_new_section
     if params[:ancestry].blank? and params[:parent].blank? and params[:level].blank?
       @section_data = Section.create(@count + 1, params[:title], params[:content], "root", 0, Time.now, Time.now)
@@ -102,6 +124,7 @@ class DocumentsController < ApplicationController
   def select_section
     @section = Section.find(params[:id], @sections)
     @sectionJSON = @section.to_json
+    @edit = params[:edit]
     respond_to do |format|
       format.js
     end
@@ -113,6 +136,21 @@ class DocumentsController < ApplicationController
     render json: { title: result }
   end
 
+  def delete_section
+    @sections = Section.delete(params[:id])
+    @sectionsJSON = @sections.to_json
+    section = @sections.last
+    @currentSectionJSON = {}
+    if section.present?
+      @currentSection = Section.new(section["id"], section["title"], section["content"], section["ancestry"], section["level"], section["created_at"], section["updated_at"])
+    end
+    @currentSectionJSON = @currentSection.to_json
+    @edit = true
+    respond_to do |format|
+      format.js
+    end
+  end
+    
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_document

@@ -2,5 +2,5 @@
   $('#newSectionModal').modal('toggle');
   $('#sectionTitle').val("");
   $('#sectionsList').html("<%= escape_javascript(render partial: 'documents/sections/sections_list', locals: {sectionsJSON: @sectionsJSON, currentSectionJSON: @currentSectionJSON}).html_safe %>");
-  $('#sectionsContentEditor').html("<%= escape_javascript(render partial: 'documents/sections/section_content_editor', locals: {sections_size: @sections.size, document: @document, sections: @sections, section: @section}).html_safe %>");
+  $('#sectionsContentEditor').html("<%= escape_javascript(render partial: 'documents/sections/section_content_editor', locals: {sections_size: @sections.size, sections: @sections, section: @section}).html_safe %>");
 <% end %>

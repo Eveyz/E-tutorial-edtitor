@@ -10,7 +10,6 @@
       </div>
       <%= form_with url: add_new_section_documents_path do |form| %>
         <div class="modal-body">
-          <%= form.hidden_field :id, value: document.id %>
           <%= form.hidden_field :parent, id: "modal-parent" %>
           <%= form.hidden_field :ancestry, id: "modal-parent-ancestry" %>
           <%= form.hidden_field :level, id: "modal-parent-level" %>

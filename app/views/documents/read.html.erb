@@ -1,0 +1,13 @@
+<div class="container-fluid">
+  <div class="row" style="position: relative;">
+    <nav class="col-sm-3 col-md-3 hidden-xs-down bg-faded sidebar">
+      <div id="sectionsListContainer">
+        <%= render "documents/sections/sections_list", sectionsJSON: @sectionsJSON, currentSectionJSON: @currentSectionJSON, edit: @edit %>
+      </div>
+      <br>
+    </nav>
+    <main class="col-sm-9 offset-sm-3 col-md-9 offset-md-3 pt-3" id="sectionsContent" style="background-color: #FAFAFA;padding: 30px;">
+      <%= render "documents/sections/section_content", section: @currentSection, sections_size: @sections.size %>
+    </main>
+  </div>
+</div>
