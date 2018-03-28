@@ -1,5 +1,4 @@
 class DocumentsController < ApplicationController
-  before_action :set_document, only: [:show, :edit, :update, :destroy, :add_new_section]
   before_action :initialize_document_json_file, only: [:edit_tutorial]
   before_action :read_sections_from_json_file, only: [:edit_tutorial, :add_new_section, :add_section_content, :select_section, :save_section_new_title, :read]
 
@@ -110,6 +109,7 @@ class DocumentsController < ApplicationController
     @sectionsJSON = @section_data[:sections].to_json
     @section = @section_data[:section]
     @currentSectionJSON = @section.to_json
+    @edit = true
     respond_to do |format|
       format.js
     end
@@ -137,7 +137,7 @@ class DocumentsController < ApplicationController
   end
 
   def delete_section
-    @sections = Section.delete(params[:id])
+    @sections = Section.delete(params[:id].to_i)
     @sectionsJSON = @sections.to_json
     section = @sections.last
     @currentSectionJSON = {}

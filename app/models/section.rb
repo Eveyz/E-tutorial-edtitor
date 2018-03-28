@@ -56,21 +56,16 @@ class Section
   def self.delete(id)
     data = Section.load_data_from_json_file
     sections = data["sections"]
-    # sections.each do |sec|
-    #   if sec["id"] == id
-    #     sections.delete(sec)
-    #   end
-    # end
-    sections.delete_if {|sec| sec["id"] == id } 
-    p sections
-    data = Section.load_data_from_json_file
-    sections = data["sections"]
-    return sections
-    # if self.write_to_file(data)
-    #   return value
-    # else
-    #   return false
-    # end
+    sections.each do |sec|
+      if sec["id"] == id
+        sections.delete(sec)
+      end
+    end
+    if self.write_to_file(data)
+      return Section.load_sections_from_json_file
+    else
+      return false
+    end
   end
 
   def self.add_new_section_to_json_file(tempHash)
@@ -88,6 +83,11 @@ class Section
     rescue
       return false
     end
+  end
+
+  def self.load_sections_from_json_file
+    data = Section.load_data_from_json_file
+    return data["sections"]
   end
 
   def self.write_to_file(data)
