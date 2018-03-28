@@ -20,7 +20,6 @@ class DocumentsController < ApplicationController
 
   # GET /documents/1/edit
   def edit
-    # @sections = @document.sections.order('sections.updated_at ASC')
     @sectionsJSON = @sections.to_json
     section = @sections.last
     @currentSectionJSON = {}

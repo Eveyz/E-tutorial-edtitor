@@ -16,4 +16,5 @@
 //= require turbolinks
 //= require bootstrap-sprockets
 //= require trix
+//= require froala_editor.min.js
 //= require_tree .
